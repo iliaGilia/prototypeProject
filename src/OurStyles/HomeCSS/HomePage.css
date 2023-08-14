@@ -1,0 +1,35 @@
+.container {
+    text-align: center;
+    margin: 0 auto;
+    max-width: 800px;
+    padding: 20px;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+  }
+  
+  .header {
+    background-color: #f1c6eb;
+    color: white;
+    padding: 10px 0;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+  }
+  
+  .main-content {
+    margin-top: 20px;
+    align-items: center;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+  }
+  
+  .footer {
+    margin-top: 20px;
+    color: #555;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+  }
+  
