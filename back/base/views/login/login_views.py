@@ -4,10 +4,13 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.tokens import RefreshToken
-from ...serializers import CustomTokenObtainPairSerializer, CustomTokenRefreshSerializer
+from ...serializers import CustomTokenObtainPairSerializer, CustomTokenRefreshSerializer,RegistrationSerializer
 from django.http import JsonResponse
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
+from rest_framework.decorators import api_view
+from rest_framework import status
+from rest_framework.response import Response
 User = get_user_model()
 
 def login_view(request):
@@ -28,19 +31,27 @@ def login_view(request):
     response_data = {'success': False, 'message': 'Invalid request'}
     return JsonResponse(response_data)
 
+@api_view(['POST'])
 def registration_view(request):
     if request.method == 'POST':
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        
-        # You can add more validation and error handling here
-        
-        user = User.objects.create_user(email=email, password=password)
-        return JsonResponse({'message': 'User registered successfully.'})
-    return JsonResponse({'message': 'Registration form not submitted.'}, status=400)
+        serializer = RegistrationSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            return Response({'message': 'User registered successfully.'}, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class CustomTokenObtainPairView(TokenObtainPairView):
-    serializer_class = CustomTokenObtainPairSerializer
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+        if response.status_code == status.HTTP_200_OK:
+            response.data['success'] = True
+        return response
+
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+        if response.status_code == status.HTTP_200_OK:
+            response.data['success'] = True
+        return response
 
 class CustomTokenRefreshView(TokenRefreshView):
     serializer_class = CustomTokenRefreshSerializer
