@@ -10,10 +10,19 @@ const HomePage = () => {
         <div>
             <nav className="nav">
                 <ul>
-                    <li>
-                    <Link to={isLoggedIn ? "/dashboard" : "/login"}>
+                    <li style={{ display: 'flex', alignItems: 'center' }}>
+                        <Link to={isLoggedIn ? "/dashboard" : "/login"}>
                             {isLoggedIn ? 'Dashboard' : 'Login'}
                         </Link>
+
+                        {isLoggedIn && (
+                            <>
+                                <span style={{ margin: '0 10px' }}>|</span> {/* Add spacing with a separator */}
+                                <Link to="/profile">
+                                    Profile
+                                </Link>
+                            </>
+                        )}
                     </li>
                 </ul>
             </nav>
