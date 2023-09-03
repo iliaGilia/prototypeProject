@@ -6,7 +6,8 @@ import '../../OurStyles/LoginCSS/LoginPage.css';  // Import your CSS file for st
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import HomePage from '../Home/HomePage';
-
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Button } from '@mui/material';
 
 const API_URL = 'http://localhost:8000';
 
@@ -23,21 +24,26 @@ const LoginPage = () => {
                 email,
                 password,
             });
-            // console.log('API response:', response);
-            // console.log('Response data:', response.data);
-            // const success = response.data.success;
-            // const access_token = response.data.access_token;
-            // console.log('Success:', success);
-            // if (success) {
-            //     // Use the login function to set the user as authenticated
-            //     login(access_token);
-            //     navigate('/');
-            // } else {
-            //     console.error('Login failed:', response.data.message);
-            // }
-            const token = response.data.access_token; // Extract token from API response
-            login(token); // Call the login function with the token
-            navigate('/');
+    
+            console.log('API response:', response);
+    
+            // Log the entire response.data object
+            console.log('Response data:', response.data);
+    
+            const success = response.data.success;
+            const access_token = response.data.access_token;
+    
+            console.log('Success:', success);
+    
+            if (success) {
+                // Use the login function to set the user as authenticated
+                login(access_token);
+    
+                // Redirect the user to the home page after successful login
+                navigate('/');
+            } else {
+                console.error('Login failed:', response.data.message);
+            }
         } catch (error) {
             console.error(error);
         }
@@ -45,13 +51,15 @@ const LoginPage = () => {
 
     return (
         <div>
+            
             {isLoggedIn ? (
                 <HomePage />
             ) : (
                 <>
+                <h1>Login</h1>
                     <input type="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)} />
                     <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)} />
-                    <button onClick={handleLogin}>Login</button>
+                    <button onClick={handleLogin} className="btn btn-primary">Login</button>
                     <p>Don't have an account? <Link to="/registration">Register here</Link></p>
                 </>
             )}

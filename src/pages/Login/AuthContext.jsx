@@ -11,7 +11,6 @@ export function AuthProvider({ children }) {
 
   const login = (token) => {
     localStorage.setItem('token', token); // Store the token in localStorage
-    console.log('Token:', token); 
     setIsLoggedIn(true);
   };
 

@@ -10,32 +10,21 @@ const HomePage = () => {
         <div>
             <nav className="nav">
                 <ul>
-                    <li style={{ display: 'flex', alignItems: 'center' }}>
-                        <Link to={isLoggedIn ? "/dashboard" : "/login"}>
+                    <li>
+                    <Link to={isLoggedIn ? "/dashboard" : "/login"}>
                             {isLoggedIn ? 'Dashboard' : 'Login'}
                         </Link>
-
-                        {isLoggedIn && (
-                            <>
-                                <span style={{ margin: '0 10px' }}>|</span> {/* Add spacing with a separator */}
-                                <Link to="/profile">
-                                    Profile
-                                </Link>
-                            </>
-                        )}
                     </li>
                 </ul>
             </nav>
-            <header className="header">
+            <div className="header-home">
                 <h1>Welcome to My Homepage</h1>
-            </header>
+            </div>
             <main className="main-content">
                 <p>This is a simple and nice-looking home page created using React.</p>
                 <p>Feel free to customize and style it according to your preferences!</p>
             </main>
-            <footer className="footer">
-                <p>&copy; 2023 Your Name. All rights reserved.</p>
-            </footer>
+            <br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br><br></br>fgfdgdfdfg<br></br><br></br><br></br><br></br>fdfdsfds
         </div>
     );
 }
