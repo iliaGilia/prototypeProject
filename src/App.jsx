@@ -4,12 +4,10 @@ import { BrowserRouter as Router, Route, Routes, NavLink } from 'react-router-do
 import LoginPage from './pages/Login/LoginPage';
 import HomePage from './pages/Home/HomePage';
 import Dashboard from './pages/Graphes/Dashboard';
+import ProfilePage from './pages/Profile/ProfilePage';
 import RegistrationPage from './pages/Login/RegistrationPage';
 import './OurStyles/App.scss';
-import { Button } from '@mui/material';
-import HomeIcon from '@mui/icons-material/Home';
-import { styled } from '@mui/material/styles';
-import { css } from '@emotion/react';
+
 
 function App() {
     return (
@@ -26,10 +24,10 @@ function App() {
                                 <NavLink to="/login">Login</NavLink>
                             </li>
                             <li>
-                                <NavLink to="/registration">Registration</NavLink>
+                                <NavLink to="/dashboard">Dashboard</NavLink>
                             </li>
                             <li>
-                                <NavLink to="/dashboard">Dashboard</NavLink>
+                                <NavLink to="/profile">Profile</NavLink>
                             </li>
                         </ul>
                         </a>
@@ -44,6 +42,7 @@ function App() {
                         <Route path="/login" element={<LoginPage />} />
                         <Route path="/registration" element={<RegistrationPage />} />
                         <Route path="/dashboard" element={<Dashboard />} />
+                        <Route path="/profile" element={<ProfilePage />}/>
                     </Routes>
                 </main>
 

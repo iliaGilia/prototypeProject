@@ -1,48 +1,44 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '../Login/AuthContext';
-const API_URL = 'http://localhost:8000'; 
+import axios from 'axios'; // Import Axios
 
 const ProfilePage = () => {
-    const { isLoggedIn, login } = useAuth(); // Use the login function from AuthContext
-    const [userData, setUserData] = useState(null);
+  const { isLoggedIn } = useAuth();
+  const [user, setUser] = useState(null);
 
-    useEffect(() => {
-        if (isLoggedIn) {
-            // Retrieve the token from local storage
-            const authToken = localStorage.getItem('token');
-            console.log('Token:', authToken); // Log the token to the console
+  useEffect(() => {
+    if (isLoggedIn) {
+      // Make an authenticated API request to fetch user data using Axios
+      axios
+      .get('/api/profile/', {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      })
+      .then((response) => {
+        console.log(response.data); // Log the entire response
+        setUser(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching user data:', error);
+      });
+    }
+  }, [isLoggedIn]);
 
-            // Make the API request to fetch user profile data
-            axios.get(`${API_URL}/api/profile/`, {
-                headers: {
-                    Authorization: `Bearer ${authToken}`,  // Use 'Bearer' before the token
-                },
-            })
-            .then(response => {
-                setUserData(response.data);
-            })
-            .catch(error => {
-                console.error('Error fetching user profile:', error);
-            });
-        }
-    }, [isLoggedIn]);
+  if (!isLoggedIn) {
+    return <div>Please log in to view your profile.</div>;
+  }
 
+  if (!user)
     return (
-        <div>
-            <h1>User Profile</h1>
-            {userData ? (
-                <div>
-                    <p>Email: {userData.email}</p>
-                    <p>First Name: {userData.first_name}</p>
-                    <p>Last Name: {userData.last_name}</p>
-                    {/* Display other user data fields from the API */}
-                </div>
-            ) : (
-                <p>Loading...</p>
-            )}
-        </div>
-    );
+    <div>
+      <h2>Your Profile</h2>
+      <p>Email: {user.email}</p>
+      <p>First Name: {user.first_name}</p>
+      <p>Last Name: {user.last_name}</p>
+      {/* Add more profile information as needed */}
+    </div>
+  );
 };
 
 export default ProfilePage;
