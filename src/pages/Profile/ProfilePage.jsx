@@ -11,9 +11,10 @@ const ProfilePage = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
+        const token = localStorage.getItem('jwtToken');
         const response = await axios.get(`${API_URL}/api/get_authenticated_user/`, {
           headers: {
-            Authorization: `Bearer ${authToken}`, // Include the token in the Authorization header 
+            Authorization: `Bearer ${token}`, // Include the token in the Authorization header 
           }
         });
         setUser(response.data);

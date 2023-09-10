@@ -8,16 +8,18 @@ export function useAuth() {
 
 export function AuthProvider({ children }) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [authToken, setAuthToken] = useState(null); // Add authToken state
+  const [authToken, setAuthToken] = useState(localStorage.getItem('jwtToken') || null); // Initialize authToken from local storage
 
   const login = (token) => {
-    localStorage.setItem('token', token); // Store the token in localStorage
+    localStorage.setItem('jwtToken', token); // Store the token in localStorage
     setAuthToken(token); // Set the authToken in state
     setIsLoggedIn(true);
+  
+    console.log('Saved token is:', token); // Log the saved token
   };
 
   const logout = () => {
-    localStorage.removeItem('token'); // Remove the token from localStorage
+    localStorage.removeItem('jwtToken'); // Remove the token from localStorage
     setAuthToken(null); // Clear the authToken in state
     setIsLoggedIn(false);
   };

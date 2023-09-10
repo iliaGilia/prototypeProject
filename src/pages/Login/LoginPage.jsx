@@ -11,7 +11,7 @@ const API_URL = 'http://localhost:8000';
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { isLoggedIn, login, authToken } = useAuth(); // Use the login function and authToken from context
+  const { isLoggedIn, login } = useAuth(); // Use the login function from context
   const navigate = useNavigate();
 
   const handleLogin = async () => {
@@ -22,18 +22,16 @@ const LoginPage = () => {
         password,
       });
 
-      console.log('API response:', response);
+      console.log('API response:', response.data.access);
 
       const success = response.data.success;
-      const access_token = response.data.access_token;
+      const access_token = response.data.access;
 
       console.log('Success:', success);
 
       if (success) {
-        // Save the access_token to local storage
-        localStorage.setItem('authToken', access_token);
-
         // Call the login function from the context to set the authToken
+        localStorage.setItem('jwtToken', response.data.access)
         login(access_token);
 
         // Redirect the user to the home page after successful login
