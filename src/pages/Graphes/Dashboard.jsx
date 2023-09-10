@@ -2,83 +2,162 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useAuth } from '../Login/AuthContext';
 import { Link } from 'react-router-dom';
-import { Line } from 'react-chartjs-2';
-import { CategoryScale, LinearScale, PointElement, Chart,LineController ,LineElement} from 'chart.js';
+import CanvasJSReact from '@canvasjs/react-charts';
 
-Chart.register(CategoryScale, LinearScale, PointElement,LineController,LineElement);
-
+const CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 const Dashboard = () => {
-    const { isLoggedIn, authToken } = useAuth();
-  const [budgetData, setBudgetData] = useState([]);
+  const { isLoggedIn, authToken } = useAuth();
   const [expensesData, setExpensesData] = useState([]);
+  const [newChart, setNewChart] = useState({
+    title: '',
+    dataPoints: [
+      { y: 0, label: 'Category 1' },
+      { y: 0, label: 'Category 2' },
+      { y: 0, label: 'Category 3' },
+    ],
+  });
+  const [categories, setCategories] = useState(
+    newChart.dataPoints.map((category) => ({
+      name: category.label,
+      value: 0,
+      percentage: 0,
+      color: getRandomColor(),
+    }))
+  );
+
+  const addCategory = () => {
+    const newCategory = {
+      name: `Category ${categories.length + 1}`,
+      value: 0,
+      percentage: 0,
+      color: getRandomColor(),
+    };
+    setCategories([...categories, newCategory]);
+  };
+
+  const updateCategoryName = (index, newName) => {
+    const updatedCategories = [...categories];
+    updatedCategories[index].name = newName;
+    setCategories(updatedCategories);
+  };
+
+  const updateCategoryValue = (index, newValue) => {
+    const updatedCategories = [...categories];
+    updatedCategories[index].value = newValue;
+    setCategories(updatedCategories);
+  };
+
+  const createChart = () => {
+    // Convert categories state into the format expected by the server
+    const chartData = {
+      title: newChart.title,
+      dataPoints: categories.map((category) => ({
+        y: category.value,
+        label: category.name,
+      })),
+    };
+
+    // Send a POST request to create a new chart
+    console.log(chartData);
+    axios
+      .post('http://localhost:8000/api/charts/', chartData, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      })
+      .then((response) => {
+        // Handle the response if needed
+        console.log('Chart created successfully:', response.data);
+
+        // Fetch the updated expenses data or perform any necessary actions
+        // ...
+
+        // Clear the new chart form if needed
+        setNewChart({
+          title: '',
+          dataPoints: categories.map((category) => ({
+            y: 0,
+            label: category.name,
+          })),
+        });
+      })
+      .catch((error) => {
+        console.error('Error creating chart:', error);
+      });
+  };
 
   useEffect(() => {
-    // Fetch budget and expenses data with authentication headers
-    axios.get('http://localhost:8000/api/budgets/', {
-      headers: {
-        Authorization: `Bearer ${authToken}`, // Include the JWT token in the header
-      },
-    }).then(response => {
-      setBudgetData(response.data);
-    });
+    // Calculate percentages in real-time as the user inputs values
+    const totalValue = categories.reduce((total, category) => total + category.value, 0);
+    const updatedCategories = categories.map((category) => ({
+      ...category,
+      percentage: totalValue === 0 ? 0 : (category.value / totalValue) * 100,
+    }));
+    setCategories(updatedCategories);
+  }, [categories]);
 
-    axios.get('http://localhost:8000/api/expenses/', {
-      headers: {
-        Authorization: `Bearer ${authToken}`, // Include the JWT token in the header
-      },
-    }).then(response => {
-      setExpensesData(response.data);
-    });
-  }, [authToken]);
-
-  // Process data and create chart datasets
-
-  const budgetLabels = budgetData.map(item => item.name);
-  const budgetAmounts = budgetData.map(item => item.amount);
-  const budgetChartData = {
-    labels: budgetLabels,
-    datasets: [
-      {
-        label: 'Budget Amount',
-        data: budgetAmounts,
-        borderColor: 'blue',
-        fill: false,
-      },
-    ],
+  const pieChartOptions = {
+    exportEnabled: true,
+    animationEnabled: true,
+    title: {
+      text: "Creating new chart"
+    },
+    data: [{
+      type: "pie",
+      startAngle: 75,
+      toolTipContent: "<b>{label}</b>: {y}₪",
+      showInLegend: "true",
+      legendText: "{label}",
+      indexLabelFontSize: 16,
+      indexLabel: "{label} - {y}₪",
+      dataPoints: categories.map((category) => ({
+        y: category.value,
+        label: category.name,
+        color: category.color, // Set category-specific color
+      })),
+    }],
   };
 
-  const expensesLabels = expensesData.map(item => item.category);
-  const expensesAmounts = expensesData.map(item => item.amount);
-  const expensesChartData = {
-    labels: expensesLabels,
-    datasets: [
-      {
-        label: 'Expense Amount',
-        data: expensesAmounts,
-        borderColor: 'red',
-        fill: false,
-      },
-    ],
-  };
-
-  const budgetChartOptions = {};
-  const expensesChartOptions = {};
+  function getRandomColor() {
+    // Generate a random color in hexadecimal format
+    return "#" + Math.floor(Math.random() * 16777215).toString(16);
+  }
 
   return (
     <div>
-      <nav>
-        {isLoggedIn ? (
-          <Link to="/dashboard">Dashboard</Link>
-        ) : (
-          <Link to="/login">Login</Link>
-        )}
-      </nav>
       <h2>Budget</h2>
-      <Line data={budgetChartData} options={budgetChartOptions} />
-
-      <h2>Expenses</h2>
-      <Line data={expensesChartData} options={expensesChartOptions} />
+      <CanvasJSChart options={pieChartOptions} />
+      <h2>Create a New Chart</h2>
+      <input
+        type="text"
+        placeholder="Chart Title"
+        value={newChart.title}
+        onChange={(e) =>
+          setNewChart({
+            ...newChart,
+            title: e.target.value,
+          })
+        }
+      />
+      {categories.map((category, index) => (
+        <div key={index}>
+          <input
+            type="text"
+            placeholder={`Category ${index + 1}`}
+            value={category.name}
+            onChange={(e) => updateCategoryName(index, e.target.value)}
+          />
+          <input
+            type="number"
+            placeholder={`Value for ${category.name}`}
+            value={category.value}
+            onChange={(e) => updateCategoryValue(index, parseFloat(e.target.value))}
+          />
+        </div>
+      ))}
+      <button onClick={addCategory}>Add Category</button>
+      <button onClick={createChart}>Create Chart</button>
     </div>
   );
 };

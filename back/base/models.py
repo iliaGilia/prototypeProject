@@ -11,6 +11,10 @@ class Expense(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     category = models.CharField(max_length=50)
     date = models.DateField()
+
+class ChartData(models.Model):
+    title = models.CharField(max_length=100)
+    data = models.JSONField()
     
 class CustomUserManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -52,8 +56,10 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name']
 
+    # Add related_name attributes for the reverse relationships
     user_permissions = models.ManyToManyField(Permission, blank=True, related_name='custom_users')
     groups = models.ManyToManyField(Group, blank=True, related_name='custom_users')
 
+    
     def __str__(self):
         return self.email

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Expense, Budget,CustomUser
+from .models import Expense, Budget,CustomUser,ChartData
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, TokenRefreshSerializer
 
 class ExpenseSerializer(serializers.ModelSerializer):
@@ -23,6 +23,11 @@ class CustomTokenRefreshSerializer(TokenRefreshSerializer):
         data = super().validate(attrs)
         # Customize response data if needed
         return data
+
+class ChartDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ChartData
+        fields = '__all__'
     
 class BudgetSerializer(serializers.ModelSerializer):
     class Meta:
