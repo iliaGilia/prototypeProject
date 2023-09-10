@@ -41,16 +41,19 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(auto_now_add=True)
+    profile_image = models.ImageField(upload_to='profile_images/', null=True, blank=True)  # Add this field
+
+    def update_profile_image(self, image):
+        self.profile_image = image
+        self.save()
 
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name']
 
-    # Add related_name attributes for the reverse relationships
     user_permissions = models.ManyToManyField(Permission, blank=True, related_name='custom_users')
     groups = models.ManyToManyField(Group, blank=True, related_name='custom_users')
 
-    
     def __str__(self):
         return self.email

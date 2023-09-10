@@ -10,7 +10,7 @@ class ExpenseSerializer(serializers.ModelSerializer):
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ('id', 'email', 'first_name', 'last_name', 'date_joined')
+        fields = ('id', 'email', 'first_name', 'last_name', 'date_joined', 'profile_image')
         
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
