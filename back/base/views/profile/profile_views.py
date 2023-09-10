@@ -1,20 +1,13 @@
-from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
-from ...models import CustomUser
 from ...serializers import CustomUserSerializer
-from rest_framework.authentication import TokenAuthentication
-from django.http import JsonResponse
-from django.contrib.auth.decorators import login_required
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.response import Response
+from ...models import CustomUser
 
 
-
-@login_required
-def profile(request):
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_authenticated_user(request):
     user = request.user
-    profile_data = {
-        'email': user.email,
-        'first_name': user.first_name,
-        'last_name': user.last_name,
-        # Add more profile data as needed
-    }
-    return JsonResponse(profile_data)
+    serializer = CustomUserSerializer(user)
+    return Response(serializer.data)
