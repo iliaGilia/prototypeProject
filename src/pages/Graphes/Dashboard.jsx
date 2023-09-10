@@ -56,10 +56,10 @@ const Dashboard = () => {
         y: category.value,
         label: category.name,
       })),
+      
     };
 
     // Send a POST request to create a new chart
-    console.log(chartData);
     axios
       .post('http://localhost:8000/api/charts/', chartData, {
         headers: {
@@ -85,6 +85,8 @@ const Dashboard = () => {
       .catch((error) => {
         console.error('Error creating chart:', error);
       });
+      console.log(chartData)
+      
   };
 
   useEffect(() => {

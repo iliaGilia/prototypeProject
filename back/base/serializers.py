@@ -24,7 +24,7 @@ class CustomTokenRefreshSerializer(TokenRefreshSerializer):
         # Customize response data if needed
         return data
 
-class ChartDataSerializer(serializers.ModelSerializer):
+class ChartSerializer(serializers.ModelSerializer):
     class Meta:
         model = ChartData
         fields = '__all__'
