@@ -9,6 +9,7 @@ import RegistrationPage from './pages/Login/RegistrationPage';
 import './OurStyles/App.scss';
 
 
+
 function App() {
     return (
         <>

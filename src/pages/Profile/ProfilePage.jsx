@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useAuth } from '../Login/AuthContext';
+import AmazonPay from './AmazonPay';
 
 const API_URL = 'http://localhost:8000';
 
@@ -88,6 +89,8 @@ const ProfilePage = () => {
         <input type="file" accept="image/*" onChange={handleImageChange} />
         <button onClick={handleImageUpload}>Upload</button>
       </div>
+
+      <AmazonPay/>
     </div>
   );
 };
